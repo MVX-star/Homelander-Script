@@ -1,4 +1,4 @@
--- Flight + Improved Laser
+-- Flight + Hold LMB Laser
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -56,7 +56,6 @@ local function startLaser()
     laserConnection = RunService.Heartbeat:Connect(function()
         if not laserStandby then return end
 
-        -- Two lasers
         for i = -1, 1, 2 do
             local laser = Instance.new("Part")
             laser.Size = Vector3.new(0.2,0.2,60)
@@ -88,5 +87,16 @@ UserInputService.InputBegan:Connect(function(input, gp)
     end
 end)
 
-print("✅ Flight + Continuous Laser Test Loaded!")
-print("F = Flight | R = Laser Standby")
+UserInputService.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and laserStandby then
+        startLaser()
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        stopLaser()
+    end
+end)
+
+print("✅ Hold LMB Laser Test Loaded! F = Flight | R = Standby")
