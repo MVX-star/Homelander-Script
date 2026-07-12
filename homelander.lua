@@ -1,3 +1,4 @@
+-- FULL SCRIPT
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -76,4 +77,4 @@ UserInputService.InputBegan:Connect(function(input)
     end
 end)
 
-print("✅ Minimal Test Loaded!")
+print("✅ Full Test Loaded!")
