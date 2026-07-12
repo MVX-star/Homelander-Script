@@ -1,4 +1,4 @@
--- Flight + Laser Test
+-- Flight + Improved Laser
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -13,6 +13,7 @@ local root = character:WaitForChild("HumanoidRootPart")
 local flying = false
 local laserStandby = false
 local bv, bg
+local laserConnection
 
 local function toggleFlight()
     flying = not flying
@@ -49,20 +50,32 @@ local function toggleFlight()
     end
 end
 
-local function fireLaser()
-    if not laserStandby then return end
+local function startLaser()
+    if laserConnection then return end
 
-    local laser = Instance.new("Part")
-    laser.Size = Vector3.new(0.5,0.5,90)
-    laser.Color = Color3.fromRGB(255, 0, 0)
-    laser.Material = Enum.Material.Neon
-    laser.Anchored = true
-    laser.CanCollide = false
-    laser.CFrame = head.CFrame * CFrame.new(0,0,-45)
-    laser.Parent = workspace
-    Debris:AddItem(laser, 0.25)
+    laserConnection = RunService.Heartbeat:Connect(function()
+        if not laserStandby then return end
 
-    print("Laser Fired!")
+        -- Two lasers
+        for i = -1, 1, 2 do
+            local laser = Instance.new("Part")
+            laser.Size = Vector3.new(0.2,0.2,60)
+            laser.Color = Color3.fromRGB(255, 0, 0)
+            laser.Material = Enum.Material.Neon
+            laser.Anchored = true
+            laser.CanCollide = false
+            laser.CFrame = head.CFrame * CFrame.new(i*0.3, 0, -30)
+            laser.Parent = workspace
+            Debris:AddItem(laser, 0.1)
+        end
+    end)
+end
+
+local function stopLaser()
+    if laserConnection then
+        laserConnection:Disconnect()
+        laserConnection = nil
+    end
 end
 
 UserInputService.InputBegan:Connect(function(input, gp)
@@ -71,13 +84,9 @@ UserInputService.InputBegan:Connect(function(input, gp)
     elseif input.KeyCode == Enum.KeyCode.R then 
         laserStandby = not laserStandby
         print("Laser Standby: " .. (laserStandby and "ON" or "OFF"))
+        if laserStandby then startLaser() else stopLaser() end
     end
 end)
 
-UserInputService.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        fireLaser()
-    end
-end)
-
-print("✅ Flight + Laser Test Loaded! F = Flight | R = Laser Standby | LMB = Fire")
+print("✅ Flight + Continuous Laser Test Loaded!")
+print("F = Flight | R = Laser Standby")
