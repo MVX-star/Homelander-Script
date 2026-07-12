@@ -254,7 +254,7 @@ local function superPunch()
 
     local punchPos = root.Position
     for _, v in pairs(Players:GetPlayers()) do
-        if v \~= player and v.Character then
+        if v ~= player and v.Character then
             local targetRoot = v.Character:FindFirstChild("HumanoidRootPart")
             if targetRoot then
                 local dist = (targetRoot.Position - punchPos).Magnitude
