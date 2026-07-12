@@ -1,10 +1,11 @@
--- Flight + Hold LMB Laser
+-- Flight + Mouse-Aimed Laser
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
 
 local player = Players.LocalPlayer
+local mouse = player:GetMouse()
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local head = character:WaitForChild("Head")
@@ -56,6 +57,8 @@ local function startLaser()
     laserConnection = RunService.Heartbeat:Connect(function()
         if not laserStandby then return end
 
+        local direction = (mouse.Hit.p - head.Position).Unit
+
         for i = -1, 1, 2 do
             local laser = Instance.new("Part")
             laser.Size = Vector3.new(0.2,0.2,60)
@@ -63,7 +66,7 @@ local function startLaser()
             laser.Material = Enum.Material.Neon
             laser.Anchored = true
             laser.CanCollide = false
-            laser.CFrame = head.CFrame * CFrame.new(i*0.3, 0, -30)
+            laser.CFrame = CFrame.new(head.Position, head.Position + direction) * CFrame.new(i*0.3, 0, -30)
             laser.Parent = workspace
             Debris:AddItem(laser, 0.1)
         end
@@ -99,4 +102,4 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
-print("✅ Hold LMB Laser Test Loaded! F = Flight | R = Standby")
+print("✅ Mouse-Aimed Laser Test Loaded! F = Flight | R = Standby | Hold LMB = Fire")
